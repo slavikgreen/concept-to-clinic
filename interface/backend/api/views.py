@@ -16,6 +16,7 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
+from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -55,8 +56,12 @@ class ImageMetadataApiView(APIView):
             type: string
         '''
         path = request.GET['dicom_location']
-        ds = dicom.read_file(path, force=True)
-        return Response(serializers.DicomMetadataSerializer(ds).data)
+
+        if not os.path.exists(path) or not path.startswith(settings.DATASOURCE_DIR):
+            raise NotFound(f"Path does not exist: {path}")
+        else:
+            ds = dicom.read_file(path, force=True)
+            return Response(serializers.DicomMetadataSerializer(ds).data)
 
 
 class ImageAvailableApiView(APIView):

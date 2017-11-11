@@ -96,7 +96,7 @@
         preview: {
           type: 'DICOM',
           prefixCS: ':/',
-          prefixUrl: '/api/images/metadata?dicom_location=/',
+          prefixUrl: '/api/images/metadata?dicom_location=',
           path: ''
         },
         selected: null,
